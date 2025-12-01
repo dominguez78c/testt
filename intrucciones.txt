@@ -1,0 +1,7 @@
+correr en terminal:
+
+$env:GEMINI_API_KEY="AIzaSyC-JZ9E9zHyRMmDLXihQB3sP6HTonwSZXc"
+
+correr app.py
+
+correr HTML
