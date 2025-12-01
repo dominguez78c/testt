@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generador de Manuales de Producción 🛠️</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* --- Paleta de Colores --- */
+        :root {
+            --color-primary: #1e3a8a; /* Azul oscuro fuerte (Navy) */
+            --color-secondary: #3b82f6; /* Azul medio (Cian) */
+            --color-background: #f7f9fc; /* Gris muy claro (Casi blanco) */
+            --color-text-dark: #1f2937; /* Texto principal */
+            --color-text-light: #4b5563; /* Etiquetas/Secundario */
+            --color-border: #e5e7eb; /* Borde suave */
+        }
+
+        /* --- Estilos Generales --- */
+        body { 
+            font-family: 'Poppins', sans-serif; 
+            margin: 0; 
+            padding: 40px 20px;
+            background-color: var(--color-background); 
+            color: var(--color-text-dark); 
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+        }
+        .container { 
+            width: 100%;
+            max-width: 750px; /* Un poco más de espacio */
+            background: white; 
+            padding: 50px; /* Más padding interno */
+            border-radius: 18px; 
+            box-shadow: 0 20px 50px rgba(2, 33, 94, 0.1); /* Sombra con más profundidad */
+            border: 1px solid var(--color-border); /* Borde sutil */
+        }
+        
+        /* --- Encabezado --- */
+        h1 { 
+            color: var(--color-primary); 
+            text-align: center; 
+            font-weight: 700;
+            font-size: 2.2rem;
+            margin-bottom: 40px; 
+            padding-bottom: 15px;
+            /* Usamos un degradado para la línea de división para un toque moderno */
+            border-bottom: 3px solid transparent;
+            border-image: linear-gradient(to right, var(--color-background) 0%, var(--color-secondary) 50%, var(--color-background) 100%) 1;
+        }
+
+        /* --- Formularios y Etiquetas --- */
+        label { 
+            display: block; 
+            margin-bottom: 8px; 
+            font-weight: 600; 
+            color: var(--color-text-light); /* Menos fuerte que el texto principal */
+            font-size: 0.9rem;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+        .input-group {
+            margin-bottom: 30px;
+        }
+
+        /* Estilo para inputs y textarea */
+        input[type="text"], input[type="number"], textarea, input[type="file"] {
+            width: 100%; 
+            padding: 14px 18px; 
+            border: 2px solid var(--color-border); /* Borde más grueso y claro */
+            border-radius: 10px; 
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            font-weight: 400;
+            color: var(--color-text-dark);
+            background-color: white;
+        }
+        input:focus, textarea:focus {
+            border-color: var(--color-secondary);
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.2); 
+            outline: none;
+            background-color: #ffffff;
+        }
+        textarea { 
+            resize: vertical; 
+            height: 150px; 
+        }
+
+        /* Estilo específico para el input[type="file"] */
+        input[type="file"] {
+            border-style: dashed; /* Borde de archivo punteado */
+            background-color: #eff6ff; /* Fondo sutilmente azul para el área de carga */
+            color: var(--color-primary);
+            font-weight: 600;
+            padding: 18px;
+        }
+        
+        /* Estilos de la rejilla de Dimensiones */
+        .dimensiones { 
+            display: grid; 
+            grid-template-columns: repeat(3, 1fr); 
+            gap: 25px; 
+            padding: 15px;
+            border: 1px solid #dbeafe; /* Borde muy suave para agrupar */
+            border-radius: 10px;
+            background-color: #f8fafc; /* Fondo muy claro para el grupo */
+        }
+        .dimensiones .input-group {
+            margin-bottom: 0;
+        }
+        
+        /* --- Botón --- */
+        button { 
+            width: 100%;
+            background: var(--color-primary); 
+            color: white; 
+            padding: 18px 20px; 
+            border: none; 
+            border-radius: 10px; 
+            cursor: pointer; 
+            font-size: 1.15rem; 
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            box-shadow: 0 8px 20px rgba(30, 58, 138, 0.3); /* Sombra prominente */
+            transition: background-color 0.2s, box-shadow 0.2s, transform 0.1s; 
+            margin-top: 40px;
+        }
+        button:hover { 
+            background-color: #1f3070; /* Azul ligeramente más oscuro */
+            box-shadow: 0 10px 25px rgba(30, 58, 138, 0.4);
+        }
+        button:active {
+            transform: translateY(2px);
+            box-shadow: 0 4px 10px rgba(30, 58, 138, 0.3);
+        }
+        button:disabled {
+            background-color: #9ca3af;
+            cursor: not-allowed;
+            box-shadow: none;
+            transform: none;
+        }
+
+        /* --- Estado/Mensajes (Contrastes Aumentados) --- */
+        #estado { 
+            margin-top: 35px; 
+            padding: 20px; 
+            border-radius: 10px; 
+            font-weight: 700; /* Texto más grueso */
+            display: none; 
+            text-align: center;
+            font-size: 1rem;
+            letter-spacing: 0.2px;
+        }
+        .estado-warning { 
+            background-color: #fff8e1; /* Amarillo pálido */
+            color: #d97706; /* Naranja oscuro */
+            border: 2px solid #fcd34d; 
+        }
+        .estado-success {
+            background-color: #e0f2f1; /* Verde/Cian pálido */
+            color: #0d9488; /* Verde azulado oscuro */
+            border: 2px solid #2dd4bf;
+        }
+        .estado-error {
+            background-color: #ffebee; /* Rojo pálido */
+            color: #ef4444; /* Rojo brillante */
+            border: 2px solid #fca5a5;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Generador de Manuales de Producción 📐</h1>
+        <form id="proyecto-form">
+            
+            <div class="input-group">
+                <label for="render-file">Subir Render del Proyecto (Imagen o PDF)</label>
+                <input type="file" id="render-file" accept="image/*, application/pdf" required>
+            </div>
+
+            <label>Dimensiones Generales del Proyecto (cm)</label>
+            <div class="dimensiones input-group">
+                <div class="input-group">
+                    <label for="frente">Frente</label>
+                    <input type="number" id="frente" placeholder="Ej: 300" required>
+                </div>
+                <div class="input-group">
+                    <label for="fondo">Fondo</label>
+                    <input type="number" id="fondo" placeholder="Ej: 150" required>
+                </div>
+                <div class="input-group">
+                    <label for="altura">Altura</label>
+                    <input type="number" id="altura" placeholder="Ej: 240" required>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label for="prompt">Especificaciones Detalladas (Materiales, Acabados, Iluminación, etc.)</label>
+                <textarea id="prompt" placeholder="Ej: Material principal MDF 15mm, acabado laca brillante, luz LED blanca cálida. Usar tornillos M8 para ensambles..." required></textarea>
+            </div>
+
+            <button type="submit" id="submit-btn">Generar Manuales y Maqueta con IA</button>
+        </form>
+
+        <div id="estado" class="estado-warning"></div>
+    </div>
+
+    <script>
+        document.getElementById('proyecto-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const estadoDiv = document.getElementById('estado');
+            const submitBtn = document.getElementById('submit-btn');
+
+            // 1. Bloquear botón e iniciar estado
+            submitBtn.disabled = true;
+            estadoDiv.style.display = 'block';
+            estadoDiv.className = 'estado-warning';
+            estadoDiv.innerHTML = '⏳ **Enviando datos y procesando por la IA...** Esto puede tardar unos segundos.';
+
+            const formData = new FormData();
+            
+            // 2. Archivo
+            const renderFile = document.getElementById('render-file').files[0];
+            if (!renderFile) {
+                estadoDiv.className = 'estado-error';
+                estadoDiv.innerHTML = '❌ **Error de Archivo:** Debe subir un render.';
+                submitBtn.disabled = false;
+                return;
+            }
+            formData.append('render', renderFile);
+
+            // 3. Dimensiones y Prompt
+            const data = {
+                frente: parseFloat(document.getElementById('frente').value),
+                fondo: parseFloat(document.getElementById('fondo').value),
+                altura: parseFloat(document.getElementById('altura').value),
+                prompt: document.getElementById('prompt').value
+            };
+            
+            // Agregar datos JSON
+            formData.append('data', JSON.stringify(data));
+
+            try {
+                // **IMPORTANTE**: La URL debe apuntar al endpoint de su servidor Python.
+                // NOTE: Se mantiene la URL original para la funcionalidad
+                const response = await fetch('http://127.0.0.1:5000/generar', { 
+                    method: 'POST',
+                    body: formData
+                });
+                
+                estadoDiv.innerHTML = '⏳ **Archivos creados en el servidor.** Esperando la descarga...';
+
+                if (response.ok) {
+                    estadoDiv.className = 'estado-success';
+                    estadoDiv.innerHTML = '✅ **Generación completada!** Descargando archivos...';
+                    
+                    // Descarga del ZIP
+                    const blob = await response.blob();
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.style.display = 'none';
+                    a.href = url;
+                    a.download = 'manuales_proyecto_final.zip';
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                    
+                    estadoDiv.innerHTML = '✅ **Proceso finalizado!** El archivo ZIP se ha descargado.';
+                } else {
+                    // Si hay un error 500 o 400, intentamos leer el JSON del servidor.
+                    const errorJson = await response.json();
+                    estadoDiv.className = 'estado-error';
+                    estadoDiv.innerHTML = `❌ **Error ${response.status} en la generación:** ${errorJson.message || 'Error desconocido. Verifique la terminal de Flask.'}`;
+                }
+            } catch (error) {
+                estadoDiv.className = 'estado-error';
+                estadoDiv.innerHTML = `❌ **Error de conexión o proceso:** ${error.message}. Asegúrese de que Flask esté corriendo.`;
+                console.error('Fetch Error:', error);
+            } finally {
+                // Habilitar el botón nuevamente al finalizar el intento
+                submitBtn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>
